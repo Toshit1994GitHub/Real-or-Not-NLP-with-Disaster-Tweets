@@ -1,22 +1,18 @@
 import pandas as pd
-df=pd.read_csv("D:\\Toshit1\\Data\\Kaggel__1\\Dejastar\\train_NEW_C.csv")
-# print("Data Frame\n",df)
-# df.info()
-# a=df.shape
-# print("Data set\n",df.head())
-# print(a)
-# df.info()
+df=pd.read_csv('D:\\Toshit1\\Data\\Kaggel__1\\NLP\\train.csv')
+
+
 
 y=df.target
 # print("Target Value\n",y)
 x=df['text']
-#
-# x=df.drop("label",axis=1)
+
 # print(x)
+
 
 from sklearn.model_selection import train_test_split
 # x_train,x_test,y_train,y_test=train_test_split(train_test_split(x,y),test_size=0.2)#,random_state=7)
-x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2)
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2,random_state=0)
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 tfidf_Vectorizer=TfidfVectorizer(stop_words='english',max_df=0.7)
@@ -26,24 +22,21 @@ tfidf_test=tfidf_Vectorizer.transform(x_test)
 # print(tfidf_test)
 
 
+from sklearn.svm import SVC
+model=SVC(kernel='linear')
+model.fit(tfidf_train,y_train)
 
 
-# from sklearn.preprocessing import
 
-#DataFlair - Initialize a PassiveAggressiveClassifier
 
-from sklearn.linear_model import PassiveAggressiveClassifier
-pac=PassiveAggressiveClassifier(max_iter=50)
-pac.fit(tfidf_train,y_train)
 #DataFlair - Predict on the test set and calculate accuracy
+
 from sklearn.metrics import confusion_matrix,accuracy_score
-y_pred=pac.predict(tfidf_test)
+y_pred=model.predict(tfidf_test)
 
+score=accuracy_score(y_test,y_pred)*100
+print("Accuracy\n",score)
 
-score=accuracy_score(y_test,y_pred)
-print(f'Accuracy: {round(score*100,2)}%')
-
-from sklearn.metrics import confusion_matrix
 cm=confusion_matrix(y_test,y_pred)
 print(cm)
 
